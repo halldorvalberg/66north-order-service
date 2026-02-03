@@ -1,0 +1,19 @@
+# .gitignore for Python FastAPI Alembic
+__pycache__/
+*.py[cod]
+*.egg
+*.egg-info/
+dist/
+build/
+.eggs/
+.env
+.venv
+ENV/
+venv/
+instance/
+.webassets-cache
+*.sqlite3
+*.db
+*.log
+alembic/versions/*.pyc
+alembic/versions/*.pyo
