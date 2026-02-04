@@ -1,4 +1,6 @@
+from datetime import date
 from fastapi import FastAPI, Depends, HTTPException
+from sqlalchemy import func
 from sqlalchemy.orm import Session
 
 from app.database import get_db
@@ -26,6 +28,43 @@ def create_order(order: schemas.OrderCreate, db: Session = Depends(get_db)):
     db.commit()
     db.refresh(db_order)
     return db_order
+
+
+@app.get("/orders/summary", response_model=schemas.OrderSummary)
+def get_orders_summary(db: Session = Depends(get_db)):
+    """
+    Get aggregated order data:
+    - Total number of orders
+    - Total revenue
+    - Revenue per day
+    """
+    # Total orders count
+    total_orders = db.query(func.count(models.Order.id)).scalar() or 0
+
+    # Total revenue
+    total_revenue = db.query(func.sum(models.Order.total_amount)).scalar() or 0
+
+    # Revenue per day (grouped by order_date)
+    revenue_by_day = (
+        db.query(
+            func.date(models.Order.order_date).label("date"),
+            func.sum(models.Order.total_amount).label("revenue"),
+        )
+        .group_by(func.date(models.Order.order_date))
+        .order_by(func.date(models.Order.order_date).desc())
+        .all()
+    )
+
+    # Format revenue per day
+    revenue_per_day = [
+        {"date": str(row.date), "revenue": int(row.revenue)} for row in revenue_by_day
+    ]
+
+    return {
+        "total_orders": total_orders,
+        "total_revenue": total_revenue,
+        "revenue_per_day": revenue_per_day,
+    }
 
 
 @app.get("/orders/", response_model=list[schemas.OrderResponse])
