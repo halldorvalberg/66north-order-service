@@ -35,29 +35,40 @@ def get_orders_summary(db: Session = Depends(get_db)):
     """
     Get aggregated order data:
     - Total number of orders
-    - Total revenue
-    - Revenue per day
+    - Total revenue per currency
+    - Revenue per day per currency
     """
     # Total orders count
     total_orders = db.query(func.count(models.Order.id)).scalar() or 0
 
-    # Total revenue
-    total_revenue = db.query(func.sum(models.Order.total_amount)).scalar() or 0
+    # Total revenue by currency
+    revenue_by_currency = (
+        db.query(models.Order.currency, func.sum(models.Order.total_amount).label("total"))
+        .group_by(models.Order.currency)
+        .all()
+    )
 
-    # Revenue per day (grouped by order_date)
-    revenue_by_day = (
+    # Format revenue by currency
+    total_revenue = [
+        {"currency": row.currency, "total": int(row.total)} for row in revenue_by_currency
+    ]
+
+    # Revenue per day by currency
+    revenue_by_day_currency = (
         db.query(
             func.date(models.Order.order_date).label("date"),
+            models.Order.currency,
             func.sum(models.Order.total_amount).label("revenue"),
         )
-        .group_by(func.date(models.Order.order_date))
-        .order_by(func.date(models.Order.order_date).desc())
+        .group_by(func.date(models.Order.order_date), models.Order.currency)
+        .order_by(func.date(models.Order.order_date).desc(), models.Order.currency)
         .all()
     )
 
     # Format revenue per day
     revenue_per_day = [
-        {"date": str(row.date), "revenue": int(row.revenue)} for row in revenue_by_day
+        {"date": str(row.date), "currency": row.currency, "revenue": int(row.revenue)}
+        for row in revenue_by_day_currency
     ]
 
     return {

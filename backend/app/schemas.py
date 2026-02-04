@@ -7,18 +7,18 @@ from typing import Optional
 
 class OrderStatus(str, Enum):
     """Valid order statuses"""
+
     PENDING = "pending"
     CONFIRMED = "confirmed"
     PROCESSING = "processing"
     SHIPPED = "shipped"
     DELIVERED = "delivered"
+    COMPLETED = "completed"
     CANCELLED = "cancelled"
 
 
 # Common ISO 4217 currency codes
-VALID_CURRENCIES = {
-    "ISK", "USD", "EUR", "GBP", "CAD", "AUD", "JPY", "CHF", "SEK", "NOK", "DKK"
-}
+VALID_CURRENCIES = {"ISK", "USD", "EUR", "GBP", "CAD", "AUD", "JPY", "CHF", "SEK", "NOK", "DKK"}
 
 
 class OrderBase(BaseModel):
@@ -26,7 +26,9 @@ class OrderBase(BaseModel):
 
     order_id: str = Field(..., min_length=1, description="Business order ID")
     customer_id: str = Field(..., min_length=1, description="Customer reference")
-    total_amount: int = Field(..., gt=0, description="Total order amount in cents/smallest currency unit")
+    total_amount: int = Field(
+        ..., gt=0, description="Total order amount in cents/smallest currency unit"
+    )
     currency: str = Field(
         ..., min_length=3, max_length=3, description="ISO 4217 currency code (e.g., ISK, USD)"
     )
@@ -104,16 +106,28 @@ class OrderResponse(OrderBase):
     model_config = {"from_attributes": True}
 
 
-class DailyRevenue(BaseModel):
-    """Revenue for a specific day"""
+class CurrencyTotal(BaseModel):
+    """Total revenue for a specific currency"""
+
+    currency: str = Field(..., description="ISO 4217 currency code")
+    total: int = Field(..., description="Total revenue in smallest currency unit")
+
+
+class DailyRevenueByCurrency(BaseModel):
+    """Revenue for a specific day and currency"""
 
     date: str = Field(..., description="Date in YYYY-MM-DD format")
-    revenue: int = Field(..., description="Total revenue for the day")
+    currency: str = Field(..., description="ISO 4217 currency code")
+    revenue: int = Field(..., description="Total revenue for this day in this currency")
 
 
 class OrderSummary(BaseModel):
-    """Aggregated order summary data"""
+    """Aggregated order summary data with multi-currency support"""
 
-    total_orders: int = Field(..., description="Total number of orders")
-    total_revenue: int = Field(..., description="Total revenue across all orders")
-    revenue_per_day: list[DailyRevenue] = Field(..., description="Revenue breakdown by day")
+    total_orders: int = Field(..., description="Total number of orders across all currencies")
+    total_revenue: list[CurrencyTotal] = Field(
+        ..., description="Total revenue broken down by currency"
+    )
+    revenue_per_day: list[DailyRevenueByCurrency] = Field(
+        ..., description="Daily revenue breakdown by currency"
+    )

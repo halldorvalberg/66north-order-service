@@ -7,7 +7,7 @@ services:
       POSTGRES_PASSWORD: postgres
       POSTGRES_DB: fastapi_db
     ports:
-      - "5430:5432"  # <-- Changed! Host:Container (5430 on your machine, 5432 in container)
+      - "5430:5432"  # (5430 on your machine, 5432 in container)
     env_file:
       - .env
     volumes:
