@@ -14,13 +14,13 @@ This project implements an internal service for accepting, and aggregating order
 
 ### Dashboard Preview
 
-![Hero Metrics](docs/images/hero-section.png)
+![Hero Metrics](utils/images/hero-section.png)
 *Real-time revenue, order count, and average order value across multiple currencies*
 
-![Revenue Trend](docs/images/graph.png)
+![Revenue Trend](utils/images/graph.png)
 *Daily revenue trend visualization with currency selector*
 
-![Recent Orders](docs/images/orders.png)
+![Recent Orders](utils/images/orders.png)
 *Order management table with filtering and status tracking*
 
 ## Quick Start

@@ -4,8 +4,6 @@
 **Author**: Halldór Valberg Aðalbjargarson  
 **Date**: February 2025
 
----
-
 ## Executive Summary
 
 This project implements a small internal service that accepts and aggregates order data via HTTP API. The service is built using Python and FastAPI, Alembic for database migrations, and PostgreSQL as the database.
@@ -19,15 +17,22 @@ This project implements a small internal service that accepts and aggregates ord
 
 ### Running the Service Locally
 
+1. Clone the repository
+
 ```bash
-# 1. Clone the repository
 git clone https://github.com/halldorvalberg/66north-order-service
 cd 66north-order-service/backend
+```
 
-# 2. Run setup script to install dependencies, set up the database and config environment
+2. Run setup script to install dependencies, set up the database and config environment
+
+```bash
 make setup
+```
 
-# 3. Start the service
+3. Start the service
+
+```bash
 make dev
 ```
 
@@ -37,7 +42,7 @@ The API will be available at:
 - **Interactive Documentation**: [http://localhost:5000/docs](http://localhost:5000/docs)
 - **Alternative Docs**: [http://localhost:5000/redoc](http://localhost:5000/redoc)
 
-> If the port 5000 is already in use, change the port in the file 'backend/docker-compose.yml
+> If the port 5000 is already in use, change the port in the file 'backend/docker-compose.yml'
 
 ### Running Tests
 
@@ -46,10 +51,8 @@ The API will be available at:
 make test
 
 # Run with coverage report
-pytest --cov=app --cov-report=html
+make test-coverage
 ```
-
----
 
 ## Technology Choices & Rationale
 
@@ -130,8 +133,6 @@ pytest --cov=app --cov-report=html
 - **Reversible** migrations for safe deployments
 - Standard tool in Python ecosystem
 
----
-
 ## System Architecture
 
 The system follows a typical layered architecture:
@@ -190,21 +191,19 @@ Order
 - **ISO currency codes** for international support
 - **Automatic timestamps** for audit trail
 
----
-
 ## API Documentation
 
 ### Endpoint Overview
 
-| Method | Endpoint             | Description                | Status         |
-| ------ | -------------------- | -------------------------- | -------------- |
-| GET    | `/`                  | Health check               |    Implemented |
-| POST   | `/orders/`           | Create new order           |    Implemented |
-| GET    | `/orders/summary`    | Get aggregated data        |    Implemented |
-| GET    | `/orders/`           | List orders (with filters) |    Implemented |
-| GET    | `/orders/{order_id}` | Get specific order         |    Implemented |
-| PATCH  | `/orders/{order_id}` | Update order               |    Implemented |
-| DELETE | `/orders/{order_id}` | Delete order               |    Implemented |
+| Method | Endpoint             | Description                | Status      |
+| ------ | -------------------- | -------------------------- | ----------- |
+| GET    | `/`                  | Health check               | Implemented |
+| POST   | `/orders/`           | Create new order           | Implemented |
+| GET    | `/orders/summary`    | Get aggregated data        | Implemented |
+| GET    | `/orders/`           | List orders (with filters) | Implemented |
+| GET    | `/orders/{order_id}` | Get specific order         | Implemented |
+| PATCH  | `/orders/{order_id}` | Update order               | Implemented |
+| DELETE | `/orders/{order_id}` | Delete order               | Implemented |
 
 ### Required Endpoints
 
@@ -299,8 +298,6 @@ curl -X POST "http://localhost:5000/orders/" \
 curl "http://localhost:5000/orders/summary"
 ```
 
----
-
 ## Design Decisions
 
 ### 1. Separation of Concerns
@@ -367,8 +364,6 @@ curl "http://localhost:5000/orders/summary"
 - Clear error messages for invalid input
 - Type safety throughout the request/response cycle
 
----
-
 ## Testing Strategy
 
 ### Test Coverage
@@ -410,8 +405,6 @@ I implemented **20+ automated tests** covering:
 - Fresh database for each test
 - Test client with overridden dependencies
 - Sample data generation
-
----
 
 ## Production Considerations
 
