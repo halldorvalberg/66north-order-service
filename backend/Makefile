@@ -28,13 +28,31 @@ database:
 	docker compose -f docker-compose.yml up -d
 
 env:
-	touch .env
-	echo "API_KEY=$(openssl rand -hex 16)" >> .env
-	echo "DATABASE_URL=postgresql+asyncpg://postgres:password@localhost:5432/orders_db" >> .env
+	@if [ -f .env ]; then \
+		read -p ".env file already exists. Overwrite? (y/N): " yn; \
+		case $$yn in \
+			[Yy]*) \
+				echo "API_KEY=supersecretapikey" > .env; \
+				echo "DATABASE_URL=postgresql+psycopg://postgres:postgres@localhost:5430/fastapi_db" >> .env; \
+				;; \
+			*) \
+				echo "Aborted. .env not overwritten."; \
+				exit 1; \
+				;; \
+		esac \
+	else \
+		echo "API_KEY=supersecretapikey" > .env; \
+		echo "DATABASE_URL=postgresql+psycopg://postgres:postgres@localhost:5430/fastapi_db" >> .env; \
+	fi
 
 setup: 
 	$(MAKE) install
 	$(MAKE) env
 	$(MAKE) database
 	PYTHONPATH=. uv run alembic upgrade head
+	@echo ""
+	@echo "  Setup complete!"
+	@echo "  --->   API_KEY and DATABASE_URL have been added to .env file."
+	@echo "  --->   Database is running on localhost:5430 with username 'postgres' and password 'postgres'."
+	@echo "  --->   You can run the application using 'make dev'."
 	
