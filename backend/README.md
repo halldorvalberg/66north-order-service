@@ -60,12 +60,10 @@ make test-coverage
 
 **Why Python:**
 
-- Excellent for rapid prototyping and development
 - Rapid development with excellent library ecosystem
 - Strong typing support (type hints) for maintainability
 - Widely used in data processing and integration scenarios
 - Easy to read and maintain for team collaboration
-- Simple syntax makes for human readable code
 
 **Tradeoffs:**
 
@@ -81,7 +79,6 @@ make test-coverage
 - **Type validation** built-in via Pydantic - prevents bad data at API boundary
 - **Modern Python** features (async support, type hints)
 - **Fast development** - minimal boilerplate code
-- **Production-ready** - used by Microsoft, Netflix, Uber
 
 **Tradeoffs:**
 
@@ -92,7 +89,6 @@ make test-coverage
 
 - Flask: More mature, but requires more manual work for validation/docs
 - Django: Too heavy for a microservice
-- Node.js/Express: Would also
 
 ### Database: PostgreSQL 16
 
@@ -287,15 +283,19 @@ Interactive documentation is available at [http://localhost:5000/docs](http://lo
 # Create an order
 curl -X POST "http://localhost:5000/orders/" \
   -H "Content-Type: application/json" \
+  -H "X-API-Key: your-api-key"
   -d '{
-    "order_id": "ORD-2025-001",
-    "customer_id": "CUST-123",
-    "total_amount": 25990,
-    "currency": "ISK"
+    "order_id": "ORD-2025-00002",
+    "customer_id": "CUST-IS-002",
+    "order_date": "2025-01-16T14:20:00Z",
+    "total_amount": 129980,
+    "currency": "ISK",
+    "status": "delivered"
   }'
 
 # Get summary
-curl "http://localhost:5000/orders/summary"
+curl "http://localhost:5000/orders/summary" \
+  -H "X-API-Key: your-api-key"
 ```
 
 ## Design Decisions
@@ -408,15 +408,16 @@ I implemented **20+ automated tests** covering:
 
 ## Production Considerations
 
+The following addresses the optional extension points from the case brief and how we might implement this system on production scale.
+
 ### What Would Change for Production
 
 #### 1. Authentication & Authorization
 
-**Current:** No authentication (internal service assumption)
+**Current:** We have implemented a simple API-key authentication where the endpoints are protected and only accessible if the request contains the correct key. For this simple demonstration we will not be implementing a more complex authentication system, but would do so for a system meant for production.
 
 **Production:**
 
-- API key authentication for service-to-service communication
 - OAuth2/JWT for user-specific operations
 - Role-based access control (admin, read-only, etc.)
 
@@ -481,3 +482,25 @@ I implemented **20+ automated tests** covering:
 - Point-in-time recovery capability
 - Backup verification testing
 - Disaster recovery plan
+
+### How might we integrate and scale?
+
+To explore how we might hypothetically scale the system and integrate it with existing infrastructure, there are a few areas worth considering.
+
+#### Caching and background processing for heavy tasks.
+
+To keep the service as responsive as possible, we need to be mindful of heavy tasks blocking the main request cycle. One approach is caching results for endpoints that are called frequently but don't change rapidly, the summary endpoint being a good example. We could use Redis to store precomputed aggregations and invalidate the cache when new orders come in, rather than recalculating on every request.
+
+For heavier downstream work, such as syncing orders to external systems, sending notifications, or currency conversion, we should decouple that from the HTTP request entirely. Accept the order, return immediately, and process the rest asynchronously via a background worker. In production, a message broker like RabbitMQ or Azure Service Bus would add reliability through retry logic and dead-letter queues.
+
+#### ERP integration (Dynamics AX)
+
+Dynamics 365 Finance & Operations exposes OData REST APIs, which gives us a clear path for pushing order data into the ERP via its data entities. Authentication would go through Azure AD/OAuth. On the other side, D365 can publish business events (e.g., order status changes) that our service could subscribe to via webhooks or Service Bus.
+
+An important consideration is keeping a mapping layer between our internal order model and D365's schema so the two aren't tightly coupled. D365 also enforces rate limits, so queuing outbound requests would be essential.
+
+#### Power Automate and UiPath
+
+Integrating with Power Automate would allow us to trigger flows on new orders, to post summaries to message channels, to update SharePoint lists, or to feed data into Power BI and other integrations that would not require custom code.
+
+For UiPath we could automate interactions with legacy systems that lack an accessible API. This could help with data entry and bridge tools.
