@@ -10,6 +10,7 @@ from sqlalchemy.pool import StaticPool
 
 from app.database import Base, get_db
 from app.main import app
+from app.auth import verify_api_key
 
 # Use in-memory SQLite database for testing
 SQLALCHEMY_DATABASE_URL = "sqlite:///:memory:"
@@ -44,7 +45,12 @@ def client(db_session):
         finally:
             pass
 
+    def override_verify_api_key():
+        """Mock API key verification for tests"""
+        return "test-api-key"
+
     app.dependency_overrides[get_db] = override_get_db
+    app.dependency_overrides[verify_api_key] = override_verify_api_key
     with TestClient(app) as test_client:
         yield test_client
     app.dependency_overrides.clear()
