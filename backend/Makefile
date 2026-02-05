@@ -27,3 +27,7 @@ test-coverage:
 database:
 	docker compose -f docker-compose.yml up -d
 
+env:
+	cp .env.example .env
+	echo "API_KEY=$(openssl rand -hex 16)" >> .env
+	echo "DATABASE_URL=postgresql+asyncpg://postgres:password@localhost:5432/orders_db" >> .env
