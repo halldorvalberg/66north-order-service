@@ -14,7 +14,7 @@ This project implements an internal service for accepting, and aggregating order
 
 ### Dashboard Preview
 
-![Hero Metrics](docs/images/hero.png)
+![Hero Metrics](docs/images/hero-section.png)
 *Real-time revenue, order count, and average order value across multiple currencies*
 
 ![Revenue Trend](docs/images/graph.png)
