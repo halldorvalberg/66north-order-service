@@ -1,0 +1,298 @@
+/* Admin dashboard page container */
+.page {
+  min-height: 100vh;
+  background-color: var(--chakra-colors-gray-50);
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+/* Container centering */
+.container {
+  max-width: 1280px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+/* Header section */
+.header {
+  padding-bottom: 1rem;
+}
+
+/* Chart container with improved accessibility */
+.chartContainer {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-around;
+  height: 280px;
+  gap: 1.25rem;
+  padding: 1.5rem;
+  background: linear-gradient(to top, var(--chakra-colors-gray-100) 0%, transparent 100%);
+  border-radius: 0.75rem;
+}
+
+/* Line chart container */
+.lineChartContainer {
+  padding: 1.5rem;
+  background: linear-gradient(to top, var(--chakra-colors-gray-50) 0%, transparent 100%);
+  border-radius: 0.75rem;
+}
+
+/* Individual chart bar */
+.chartBar {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 90px;
+  min-width: 60px;
+}
+
+/* Bar container for height management */
+.barContainer {
+  width: 100%;
+  height: 200px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+/* The actual bar with improved visual design */
+.bar {
+  width: 100%;
+  background: linear-gradient(to top, var(--chakra-colors-blue-600), var(--chakra-colors-blue-400));
+  border-radius: 0.5rem 0.5rem 0 0;
+  min-height: 24px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 6px -1px rgba(59, 130, 246, 0.3), 0 2px 4px -1px rgba(59, 130, 246, 0.2);
+  cursor: pointer;
+}
+
+.bar:hover {
+  background: linear-gradient(to top, var(--chakra-colors-blue-700), var(--chakra-colors-blue-500));
+  transform: translateY(-3px);
+  box-shadow: 0 8px 16px -4px rgba(59, 130, 246, 0.4), 0 4px 8px -2px rgba(59, 130, 246, 0.3);
+}
+
+.bar:focus-visible {
+  outline: 2px solid var(--chakra-colors-blue-500);
+  outline-offset: 2px;
+}
+
+/* Summary cards with enhanced hover effects */
+.summaryCard {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  cursor: pointer;
+}
+
+.summaryCard:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 24px -4px rgba(0, 0, 0, 0.12), 0 8px 16px -4px rgba(0, 0, 0, 0.08);
+}
+
+.summaryCard:focus-within {
+  outline: 2px solid var(--chakra-colors-blue-500);
+  outline-offset: 2px;
+}
+
+/* Table wrapper for better scrolling */
+.tableWrapper {
+  border-radius: 0.5rem;
+  overflow: hidden;
+}
+
+/* Table styling */
+.table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+/* Select wrapper for custom chevron */
+.selectWrapper {
+  position: relative;
+  width: 100%;
+}
+
+/* Select field styling */
+.select {
+  width: 100%;
+  transition: all 0.2s;
+  padding: 0rem 0rem 0rem 1rem;
+  margin-left: 1rem;
+  font-size: 0.875rem;
+  /* border: 1px solid var(--chakra-colors-gray-300); */
+  border-radius: 0.5rem;
+  background-color: white;
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+}
+
+.select:hover {
+  border-color: var(--chakra-colors-blue-400);
+}
+
+.select:focus {
+  outline: none;
+  border-color: var(--chakra-colors-blue-500);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+/* Input field styling */
+.input {
+  padding: 0.75rem 1rem;
+  font-size: 0.875rem;
+  border: 1px solid var(--chakra-colors-gray-300);
+  border-radius: 0.5rem;
+  background-color: white;
+  transition: all 0.2s;
+}
+
+.input::placeholder {
+  color: var(--chakra-colors-gray-400);
+}
+
+.input:hover {
+  border-color: var(--chakra-colors-gray-400);
+}
+
+.input:focus {
+  outline: none;
+  border-color: var(--chakra-colors-blue-500);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+/* Button styling */
+.button {
+  transition: all 0.2s;
+  font-weight: 600;
+  padding: 0.75rem 1.5rem !important;
+  min-height: 44px;
+  border-radius: 0.5rem;
+}
+
+.button:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px -2px rgba(0, 0, 0, 0.15);
+}
+
+.button:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.button:focus-visible {
+  outline: 2px solid var(--chakra-colors-blue-500);
+  outline-offset: 2px;
+}
+
+/* Empty state styling */
+.emptyState {
+  padding: 4rem 1.5rem;
+  border: 2px dashed var(--chakra-colors-gray-300);
+  border-radius: 0.75rem;
+  background-color: var(--chakra-colors-gray-50);
+  transition: all 0.3s;
+}
+
+.emptyState:hover {
+  border-color: var(--chakra-colors-gray-400);
+  background-color: white;
+}
+
+/* Loading skeleton animation */
+.skeleton {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+/* Responsive design improvements */
+@media (max-width: 768px) {
+  .header {
+    padding-bottom: 0.5rem;
+  }
+
+  .chartContainer {
+    height: 220px;
+    gap: 0.75rem;
+    padding: 1rem;
+  }
+
+  .barContainer {
+    height: 160px;
+  }
+
+  .chartBar {
+    max-width: 70px;
+    min-width: 50px;
+  }
+
+  .tableWrapper {
+    margin: -0.5rem;
+    padding: 0.5rem;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .summaryCard {
+    border: 2px solid var(--chakra-colors-gray-400);
+  }
+
+  .bar {
+    border: 2px solid var(--chakra-colors-blue-700);
+  }
+
+  .emptyState {
+    border-width: 3px;
+    border-color: var(--chakra-colors-gray-500);
+  }
+}
+
+/* Print styles for admin dashboard */
+@media print {
+  .page {
+    background: white;
+  }
+
+  .bar {
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+
+  .summaryCard:hover {
+    transform: none;
+    box-shadow: none;
+  }
+
+  .button {
+    display: none;
+  }
+}
+
+@keyframes floatUp {
+    0% {
+        opacity: 0;
+        transform: translate(-50%, 0) scale(0.5);
+    }
+    20% {
+        opacity: 1;
+        transform: translate(-50%, -10px) scale(1);
+    }
+    100% {
+        opacity: 0;
+        transform: translate(-50%, -60px) scale(1.2);
+    }
+}
+
+.successEmoji {
+    animation: floatUp 1.5s ease-out forwards;
+}

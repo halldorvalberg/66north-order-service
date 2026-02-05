@@ -2,6 +2,8 @@ from fastapi import FastAPI, Depends, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy import func
 from sqlalchemy.orm import Session
+from app.auth import verify_api_key
+
 
 from app.database import get_db
 from app import models, schemas
@@ -24,7 +26,11 @@ def read_root():
 
 
 @app.post("/orders/", response_model=schemas.OrderResponse, status_code=201)
-def create_order(order: schemas.OrderCreate, db: Session = Depends(get_db)):
+def create_order(
+    order: schemas.OrderCreate,
+    db: Session = Depends(get_db),
+    api_key: str = Depends(verify_api_key),
+):
     """Create a new order"""
     # Check if order_id already exists
     db_order = db.query(models.Order).filter(models.Order.order_id == order.order_id).first()
@@ -40,7 +46,7 @@ def create_order(order: schemas.OrderCreate, db: Session = Depends(get_db)):
 
 
 @app.get("/orders/summary", response_model=schemas.OrderSummary)
-def get_orders_summary(db: Session = Depends(get_db)):
+def get_orders_summary(db: Session = Depends(get_db), api_key: str = Depends(verify_api_key)):
     """
     Get aggregated order data:
     - Total number of orders
@@ -94,6 +100,7 @@ def read_orders(
     status: str | None = None,
     customer_id: str | None = None,
     db: Session = Depends(get_db),
+    api_key: str = Depends(verify_api_key),
 ):
     """Get all orders with optional filtering"""
     query = db.query(models.Order)
@@ -109,7 +116,9 @@ def read_orders(
 
 
 @app.get("/orders/{order_id}", response_model=schemas.OrderResponse)
-def read_order(order_id: str, db: Session = Depends(get_db)):
+def read_order(
+    order_id: str, db: Session = Depends(get_db), api_key: str = Depends(verify_api_key)
+):
     """Get a specific order by order_id"""
     order = db.query(models.Order).filter(models.Order.order_id == order_id).first()
     if order is None:
@@ -118,7 +127,12 @@ def read_order(order_id: str, db: Session = Depends(get_db)):
 
 
 @app.patch("/orders/{order_id}", response_model=schemas.OrderResponse)
-def update_order(order_id: str, order_update: schemas.OrderUpdate, db: Session = Depends(get_db)):
+def update_order(
+    order_id: str,
+    order_update: schemas.OrderUpdate,
+    db: Session = Depends(get_db),
+    api_key: str = Depends(verify_api_key),
+):
     """Update an existing order"""
     db_order = db.query(models.Order).filter(models.Order.order_id == order_id).first()
     if db_order is None:
@@ -135,7 +149,9 @@ def update_order(order_id: str, order_update: schemas.OrderUpdate, db: Session =
 
 
 @app.delete("/orders/{order_id}", status_code=204)
-def delete_order(order_id: str, db: Session = Depends(get_db)):
+def delete_order(
+    order_id: str, db: Session = Depends(get_db), api_key: str = Depends(verify_api_key)
+):
     """Delete an order"""
     db_order = db.query(models.Order).filter(models.Order.order_id == order_id).first()
     if db_order is None:
