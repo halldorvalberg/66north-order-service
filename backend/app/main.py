@@ -1,5 +1,5 @@
-from datetime import date
 from fastapi import FastAPI, Depends, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy import func
 from sqlalchemy.orm import Session
 
@@ -7,6 +7,15 @@ from app.database import get_db
 from app import models, schemas
 
 app = FastAPI(title="66°North Order Service")
+
+# Configure CORS
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:3000", "http://localhost:3001"],  # Frontend URLs
+    allow_credentials=True,
+    allow_methods=["*"],  # Allows all methods
+    allow_headers=["*"],  # Allows all headers
+)
 
 
 @app.get("/")
@@ -135,10 +144,3 @@ def delete_order(order_id: str, db: Session = Depends(get_db)):
     db.delete(db_order)
     db.commit()
     return None
-
-
-@app.get("/orders/customer/{customer_id}", response_model=list[schemas.OrderResponse])
-def read_customer_orders(customer_id: str, db: Session = Depends(get_db)):
-    """Get all orders for a specific customer"""
-    orders = db.query(models.Order).filter(models.Order.customer_id == customer_id).all()
-    return orders
