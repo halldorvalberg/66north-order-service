@@ -24,20 +24,10 @@ This project implements a small internal service that accepts and aggregates ord
 git clone https://github.com/halldorvalberg/66north-order-service
 cd 66north-order-service/backend
 
-# 2. Set up virtual environment
-python -m venv .venv
-source .venv/bin/activate  # On Windows: .venv\Scripts\activate
+# 2. Run setup script to install dependencies, set up the database and config environment
+make setup
 
-# 3. Install dependencies
-make install
-
-# 4. Start PostgreSQL database
-make database
-
-# 5. Run database migrations
-alembic upgrade head
-
-# 6. Start the service
+# 3. Start the service
 make dev
 ```
 
