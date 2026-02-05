@@ -5,7 +5,7 @@ A order management system using FastAPI, and a frontend example of a dashboard d
 **Author**: Halldór Valberg Aðalbjargarson  
 **Date**: February 2025
 
-## 📋 Overview
+## Overview
 
 This project implements an internal service for accepting, and aggregating order data. The system consists of:
 
@@ -23,7 +23,7 @@ This project implements an internal service for accepting, and aggregating order
 ![Recent Orders](docs/images/orders.png)
 *Order management table with filtering and status tracking*
 
-## 🚀 Quick Start
+## Quick Start
 
 ### Prerequisites
 
