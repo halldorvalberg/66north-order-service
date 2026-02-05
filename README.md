@@ -1,6 +1,6 @@
-# 66°North Order Service
+# 66°North Order Service - Case for interview
 
-A order management system using FastAPI, and a frontend example of a dashboard displaying aggregated order data.
+A order management system using FastAPI, and a frontend example of a dashboard displaying aggregated order data. 
 
 **Author**: Halldór Valberg Aðalbjargarson  
 **Date**: February 2025
